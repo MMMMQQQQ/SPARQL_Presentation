@@ -1,0 +1,87 @@
+\newenvironment{fullgreenverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{204,255,204}{\parbox{\textwidth}{\theverbbox}}\par}
+
+\newenvironment{fullblueverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{204,229,255}{\parbox{\textwidth}{\theverbbox}}\par}
+\newenvironment{fullgrayverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{211,211,211}{\parbox{\textwidth}{\theverbbox}}\par}
+
+\section{SPARQL Syntax}
+\subsection{RDF Term Syntax}
+\subsubsection{Syntax for Query Variables}
+A query variable is marked by the use of either "?" or "\$"; the "?" or "\$" is not part of the variable name. In a query, \$abc and ?abc identify the same variable.
+\subsubsection{Synax for Blank Nodes}
+\begin{fullblueverb}
+[ :p "v" ] .
+[] :p "v" .
+\end{fullblueverb}
+they have allocated a unique blank node label (here "b57") and are equivalent to:
+\begin{fullblueverb}
+_:b57 :p "v" .
+\end{fullblueverb}
+When two triple patterns have the same subject:
+\begin{fullblueverb}
+[ :p "v" ] :q "w" .
+\end{fullblueverb}
+which is equivelent to:
+\begin{fullblueverb}
+_:b57 :p "v" .
+_:b57 :q "w" .
+\end{fullblueverb}
+When they have the same object:
+\begin{fullblueverb}
+:x :q [ :p "v" ] .
+\end{fullblueverb}
+which is equivelent to:
+\begin{fullblueverb}
+:x  :q _:b57 .
+_:b57 :p "v" .
+\end{fullblueverb}
+\subsubsection{RDF Collections}
+RDF collections can be written in triple patterns using the syntax "(element1 element2 ...)". The form "()" is an alternative for the IRI http://www.w3.org/1999/02/22-rdf-syntax-ns#nil. When used with collection elements, such as (1 ?x 3 4), triple patterns with blank nodes are allocated for the collection. \textbf{The blank node at the head of the collection can be used as a subject or object in other triple patterns}. The blank nodes allocated by the collection syntax do not occur elsewhere in the query.
+\begin{fullblueverb}
+(1 ?x 3 4) :p "w" .
+\end{fullblueverb}
+is syntactic sugar for:
+\begin{fullblueverb}
+ _:b0  rdf:first  1 ;
+          rdf:rest   _:b1 .
+_:b1  rdf:first  ?x ;
+          rdf:rest   _:b2 .
+_:b2  rdf:first  3 ;
+      rdf:rest   _:b3 .
+_:b3  rdf:first  4 ;
+      rdf:rest   rdf:nil .
+_:b0  :p         "w" .
+\end{fullblueverb}
+RDF collections can be nested and can involve other syntactic forms:
+\begin{fullblueverb}
+(1 [:p :q] ( 2 ) ) .
+\end{fullblueverb}
+is syntactc sugar for:
+\begin{fullblueverb}
+_:b0  rdf:first  1 ;
+    rdf:rest   _:b1 .
+_:b1  rdf:first  _:b2 .
+_:b2  :p         :q .
+_:b1  rdf:rest   _:b3 .
+_:b3  rdf:first  _:b4 .
+_:b4  rdf:first  2 ;
+      rdf:rest   rdf:nil .
+_:b3  rdf:rest   rdf:nil .
+\end{fullblueverb}
+\subsubsection{rdf:type}
+The keywrd "a" ca be used as a predicate in a riple pattern and is an alternative for \textcolor{blue}{http://www.w3.org/1999/02/22-rdf-syntax-ns#type}. This keyword is case-sensitive.
+\begin{fullblueverb}
+?x  a  :Class1 .
+[ a :appClass ] :p "v" .
+\end{fullblueverb}
+is syntactic sugar for:
+\begin{fullblueverb}
+?x    rdf:type  :Class1 .
+_:b0  rdf:type  :appClass .
+_:b0  :p        "v" .
+\end{fullblueverb}

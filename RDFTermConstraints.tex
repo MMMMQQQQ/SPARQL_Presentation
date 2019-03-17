@@ -1,0 +1,54 @@
+\newenvironment{fullgreenverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{204,255,204}{\parbox{\textwidth}{\theverbbox}}\par}
+
+\newenvironment{fullblueverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{204,229,255}{\parbox{\textwidth}{\theverbbox}}\par}
+\newenvironment{fullgrayverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{211,211,211}{\parbox{\textwidth}{\theverbbox}}\par}
+
+\section{RDF Term Constraints}
+Graph pattern matching produces a solution sequence, where each solution has a set of binding of variables to RDF terms. SPARQL \textbf{FILTER} restrict solutions o those for which the filter expression evaluates to \textbf{TRUE}
+We will introduce this section using the daa graph below:
+\begin{fullgreenverb}
+@prefix dc:   <http://purl.org/dc/elements/1.1/> .
+@prefix :     <http://example.org/book/> .
+@prefix ns:   <http://example.org/ns#> .
+
+:book1  dc:title  "SPARQL Tutorial" .
+:book1  ns:price  42 .
+:book2  dc:title  "The Semantic Web" .
+:book2  ns:price  23 .
+\end{fullgreenverb}
+\subsection{Restricting the Value of Strings}
+SPARQL \textbf{FILTER} functions like \textcolor{blue}{regex} can test RDF literals. \textbf{regex} matches only strig literals, \textbf{regex} ca be used to match the lexical forms of other literals by using the str function.
+Query:
+\begin{fullblueverb}
+PREFIX  dc:  <http://purl.org/dc/elements/1.1/>
+SELECT  ?title
+WHERE   { ?x dc:title ?title
+          FILTER regex(?title, "^SPARQL") 
+        }
+\end{fullblueverb}
+This query will return the title which begins with "SPARQL".
+Query Result:
+\begin{fullgrayverb}
+"SPARQL Tutorial"
+\end{fullgrayverb}
+Regular expression matches may be made case-insensitive with the "i" flag.
+Query:
+\begin{fullblueverb}
+PREFIX  dc:  <http://purl.org/dc/elements/1.1/>
+SELECT  ?title
+WHERE   { ?x dc:title ?title
+          FILTER regex(?title, "web", "i" ) 
+        }
+\end{fullblueverb}
+This query will return the title containing the "web", "web" can be minuscule or uppercase.
+Query Result:
+\begin{fullgrayverb}
+title
+"The Semantic Web"
+\end{fullgrayverb}

@@ -1,0 +1,72 @@
+\newenvironment{fullgreenverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{204,255,204}{\parbox{\textwidth}{\theverbbox}}\par}
+
+\newenvironment{fullblueverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{204,229,255}{\parbox{\textwidth}{\theverbbox}}\par}
+\newenvironment{fullgrayverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{211,211,211}{\parbox{\textwidth}{\theverbbox}}\par}
+
+\section{Negation}
+\subsection{Difference between Not Exists and Minus}
+In order to explain the difference, here we give the data graph as the following:
+\begin{fullgreenverb}
+@prefix : <http://example.com/> .
+:a :p 1 .
+:a :q 1 .
+:a :q 2 .
+
+:b :p 3.0 .
+:b :q 4.0 .
+:b :q 5.0 .
+\end{fullgreenverb}
+At this moment, if we use the \textcolor{blue}{NOT EXISTS} query like the following:
+\begin{fullblueverb}
+PREFIX : <http://example.com/>
+SELECT * WHERE {
+        ?x :p ?n
+        FILTER NOT EXISTS {
+                ?x :q ?m .
+                FILTER(?n = ?m)
+        }
+}
+\end{fullblueverb}
+then we have the results
+\begin{fullgrayverb}
+x                           n
+<http://example.com/b>      3.0
+\end{fullgrayverb}
+Whereas with \textcolor{blue}{MINUS}, like following:
+\begin{fullblueverb}
+PREFIX : <http://example/>
+SELECT * WHERE {
+        ?x :p ?n
+        MINUS {
+                ?x :q ?m .
+                FILTER(?n = ?m)
+        }
+}
+\end{fullblueverb}
+We have the result
+\begin{fullgrayverb}
+x                           n
+<http://example.com/b>      3.0
+<http://example.com/a>	    1
+\end{fullgrayverb}
+because in the queries of \textcolor{blue}{MINUS}, there is no relation between the variables in the SELECT clause and in the MINUS clause, so we do not know what does ?n represent. However, in the NOT EXISTS clause, the variable ?n in NOT EXISTS clause is bounded to the ?n in the SELECT clause.
+\section{Property Paths}
+\subsection{Arbitrary Length Path Matching}
+Connectivity between the subject and object by a property path of arbitrary length can be found using the "zero or  more" property path operator, "*", and the "one or more" property path operator , +. There is also "zeros or one" connectivity property path operator, ?.
+all of these quantities express the existence number of this property which has these operators.
+for example, in the query below:
+\begin{fullblueverb}
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX :     <http://example/>
+SELECT ?person
+{ 
+    :x foaf:knows+ ?person
+}
+\end{fullblueverb}
+it means that find all the persons that x knows. In this case, foaf:know can be used multiple times to find the answer.

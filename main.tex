@@ -1,0 +1,68 @@
+\documentclass[output=paper,
+colorlinks,
+citecolor=brown,
+newtxmath
+]{langscibook} 
+\bibliography{localbibliography}
+\usepackage{comment}
+\usepackage{verbatimbox}
+
+\newenvironment{fullgreenverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{204,255,204}{\parbox{\textwidth}{\theverbbox}}\par}
+
+\newenvironment{fullblueverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{204,229,255}{\parbox{\textwidth}{\theverbbox}}\par}
+\newenvironment{fullgrayverb}
+{\verbbox}
+{\endverbbox\par\colorbox[RGB]{211,211,211}{\parbox{\textwidth}{\theverbbox}}\par}
+
+
+\author{Steve Harris, Garlik, a part of Experian
+Andy Seaborne, The Apache Software Foundation\affiliation{W3C}}
+\title{SPARQL Presentation}  
+\abstract{RDF is a directed, labeled graph data format for representing information in the Web.
+SPARQL can be used to express queries across diverse data sources, whether the data is stored natively as RDF or reviewed as RDF via middleware. The results of SPARQL queries can be result sets or RDF graphs.
+}
+
+\input{localpackages.tex}
+\input{localcommands.tex}
+
+% \IfFileExists{../localcommands.tex}{%hack to check whether this is being compiled as part of a collection or standalone
+%   \input{../localpackages}
+%   \input{../localcommands} 
+%\togglepaper[23]
+% }{}
+
+\begin{document}
+\maketitle
+
+% The part below is from the generic LangSci Press template for papers in edited volumes. Delete it when you're ready to go.
+
+\section{Introduction} 
+RDF is a directed, labeled graph data format for representing information in the Web. RDF is often used to represent, among other things; personal information, social networks, metadata about digital artifacts, as well as to provide a means of integration over disparate sources of information.
+\subsection{Document Conventions}
+\subsubsection{Namespaces}
+In this document, examples assume the following namespace prefix bindings unless otherwise stated:
+
+\begin{figure}[htp]\centering
+\caption{name space binding}
+\includegraphics{langsci/img/namespacePrefixBindings.jpg}
+\end{figure}
+
+\subsubsection{Terminology}
+The SPARQL language includes IRIs. IRIs include URIs and URLs.
+
+\input{MakingSimpleQueries.tex}
+
+\input{RDFTermConstraints.tex}
+
+\input{SPARQLSyntax.tex}
+
+\input{Negation.tex}
+
+
+
+
+\end{document}
